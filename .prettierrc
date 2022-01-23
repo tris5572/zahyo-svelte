@@ -1,0 +1,9 @@
+{
+	"useTabs": true,
+	"semi": true,
+	"arrowParens": "always",
+	"bracketSpacing": false,
+	"singleQuote": true,
+	"svelteSortOrder": "options-scripts-markup-styles",
+	"trailingComma": "none"
+}
