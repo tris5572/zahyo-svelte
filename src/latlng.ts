@@ -17,7 +17,7 @@ export function deg2dmm(deg: number): number {
 // 渡された文字列（緯度経度指定テキストフィールドへの入力）を解析し、緯度経度（DEG形式）へ変換する。
 // 変換できなかったときや、指定座標が日本付近でなかった場合は null を返す。
 export function analyzeLatlngInput(text: string): LatLngExpression | null {
-	const input = text.split(',');
+	const input = text.split(RegExp(/[,\t]/));
 	let nums = [];
 
 	// 項目の数をチェックする。最低でも2つ以上は必要。

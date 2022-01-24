@@ -15,6 +15,7 @@ test('緯度経度テキストフィールド解析', () => {
 	expect(analyzeLatlngInput('36.0,')).toBeNull();
 	expect(analyzeLatlngInput('36.2,138.7')).toEqual([36.2, 138.7]);
 	expect(analyzeLatlngInput('36.2,N, 138.6,E')).toEqual([36.2, 138.6]);
+	expect(analyzeLatlngInput('36.2,N	 138.6,E')).toEqual([36.2, 138.6]);
 	expect(analyzeLatlngInput('3507.2,13522.2')).toEqual([35.12, 135.37]);
 	expect(analyzeLatlngInput('3448,N, 13360,E')).toEqual([34.8, 134.0]);
 	// 日本の範囲外(DEG形式)

@@ -120,16 +120,16 @@
 	// DEG形式の現在座標をクリップボードへコピーする。
 	function copyDEG() {
 		copyToClipboard(
-			`${$currentLatLng[0].toFixed(6)},${$currentLatLng[1].toFixed(6)}`
+			`${$currentLatLng[0].toFixed(7)},${$currentLatLng[1].toFixed(7)}`
 		);
 	}
 
 	// DMM形式の現在座標をクリップボードへコピーする。
 	function copyDMM() {
 		copyToClipboard(
-			`${deg2dmm($currentLatLng[0]).toFixed(4)},${deg2dmm(
+			`${deg2dmm($currentLatLng[0]).toFixed(5)},${deg2dmm(
 				$currentLatLng[1]
-			).toFixed(4)}`
+			).toFixed(5)}`
 		);
 	}
 
@@ -156,7 +156,7 @@
 	<div id="information">
 		<div class="box">
 			<h2>DEG形式</h2>
-			{$currentLatLng[0].toFixed(6)}, {$currentLatLng[1].toFixed(6)}
+			{$currentLatLng[0].toFixed(7)}, {$currentLatLng[1].toFixed(7)}
 			<button on:click={copyDEG}>クリップボードへコピー</button>
 		</div>
 

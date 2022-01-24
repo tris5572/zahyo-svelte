@@ -1,109 +1,87 @@
-*Psst — looking for a more complete solution? Check out [SvelteKit](https://kit.svelte.dev), the official framework for building web applications of all sizes, with a beautiful development experience and flexible filesystem-based routing.*
+# Zahyo
 
-*Looking for a shareable component template instead? You can [use SvelteKit for that as well](https://kit.svelte.dev/docs#packaging) or the older [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+[Zahyo](https://tris5572.github.io/zahyo/) は地図と座標を表示するWebアプリ（サイト）です。日本付近の表示に特化しています。
 
----
+動くページは GitHub Pages にホスティングしています。
 
-# svelte app
+## アプリの使い方
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+### 基本
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+地図を動かすと、中心部分（十字線が表示された地点）の座標を表示します。
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+座標はDEG形式（度）とDMM形式（度分分）の両方で表示します。
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+### 座標指定
+
+座標指定のテキストフィールでへ座標情報を入力してエンターキーで確定すると、当該座標を中心に表示します。
+（入力例：「35.68137766458831, 139.7667182004376」「3541.1493,N,13945.3994,E」）
+
+主な仕様：
+- 緯度と経度の間はカンマまたはタブで区切ってください。（スペースは無視します）
+- DEG形式（度）とDMM形式（度分、度分分）の両方に対応しています。
+- 区切られた値を先頭から順に見ていき、2つの数字部分を緯度と経度として使用します。
+- 日本付近のみ対応しており、それ以外の座標を指定しても移動しません。
+
+これらの仕様から分かる通り、GNSSで得られる NMEA の座標部分をそのまま貼り付けても表示可能です。
+
+使い方のコツ：詳細な位置を知りたい場合は、確定前に地図をズームしておいてください。
+
+### 半径表示
+
+地図の中心位置から指定した半径の円を地図上に描画できます。
+
+半径表示のチェックボックスにチェックを入れ、テキストフィールドに半径の値を入力します。
 
 
-## Get started
+## （参考）座標の形式
 
-Install the dependencies...
+座標の表し方には何通りもありますが、このシステムではコンピュータの世界で一般的なDEG形式（度）とDMM形式（度分分）に対応しています。
 
-```bash
-cd svelte-app
-npm install
-```
+### DEG形式
 
-...then start [Rollup](https://rollupjs.org):
+度（Degree）で位置を表す方式です。コンピュータシステムで地図を表示するときによく使われます。
+
+単純に緯度/経度それぞれの度です。すなわち「12.3456」なら「12.3456度」です。
+
+DMM形式へ変換するときは、小数部分に60をかけて度と文字列結合します。したがってDEG形式「12.3456」はDMM形式「1220.736」であり、「12度20.736分」になります。
+
+### DMM形式
+
+度と分で位置を表す方式です。GPS(GNSS)の情報を機器から取得する際のプロトコル(NMEA)で使用されます。
+
+緯度/経度の整数部分はそのまま、小数部分を分（1度 = 60分）として表します。
+
+具体的には、DMM形式の値の、小数点の左側2桁から右の数字が分で、残りの左側の数字が度です。すなわち「1234.56」なら「12度34.56分」です。
+
+DEG形式へ変換するときは、分の部分を60で割って度に足します。したがって「12度34.56分」は「12.576」(度) になります。
+
+### その他の形式等
+
+本システムでは扱いませんが、度分秒(DMS)形式が一般的にはよく使われます。これは分の小数部分を60で割って秒にしたもので、口頭や文書といった用途では最もよく使われています。「東経123度45分12秒3456」のような形です。ただ分と秒が60で繰り上がったりして明らかに計算が面倒なので、コンピュータシステムではあまり使用されません。
+
+また測地系の違いもあったりしますが、本システムでは標準的な世界測地系に準拠しています。
+
+
+# 技術面
+
+## 使用技術
+
+- フロントエンドフレームワーク： [Svelte](https://svelte.dev)（[日本語サイト](https://svelte.jp/)）
+- プログラミング言語： TypeScript
+- 地図表示： [Leaflet](https://leafletjs.com/)
+- 地図タイル： [地理院タイル](https://maps.gsi.go.jp/development/ichiran.html)
+
+## コードの動かし方
+
+サーバローカルで試験的に動かす場合は以下のコマンドを使用します。（事前に `npm i` を実行して環境を整える必要があるはずです）
 
 ```bash
 npm run dev
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
+最終的な出力ファイルは、以下のコマンドで得られます。`public` ディレクトリ内のファイルをホスティングすればOKです。
 
 ```bash
 npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
 ```
