@@ -133,21 +133,28 @@
 		);
 	}
 
-	// 緯度経度指定フィールドでキーが押されたときに呼び出される。
-	// エンターキーが押されたら文字列を解析し、座標が返ってきたら当該座標へ移動する。
-	function latlngFieldKeyPress(e: KeyboardEvent) {
-		// キーが押されたらフィールドの警告を解除する。
-		latlngFieldWarning = false;
-
-		if (e.key === 'Enter') {
-			const latlng = analyzeLatlngInput(laglngFieldValue);
-			if (latlng == null) {
-				// 不正な値のときは警告表示にする。
-				latlngFieldWarning = true;
-			} else {
-				map.setView(latlng);
-			}
+	// 緯度経度指定フィールドの値が変更されたときに呼び出される。
+	function latlngFieldChanged(e: Event) {
+		const latlng = analyzeLatlngInput(laglngFieldValue);
+		if (latlng == null) {
+			// 不正な値のときは警告表示にする。
+			latlngFieldWarning = true;
+		} else {
+			map.setView(latlng);
 		}
+	}
+
+	// 座標へ移動ボタンが押されたとき、緯度経度指定フィールドの座標へ移動する。
+	function moveToLatlng() {
+		const latlng = analyzeLatlngInput(laglngFieldValue);
+		if (latlng != null) {
+			map.setView(latlng);
+		}
+	}
+
+	// 緯度経度指定フィールドの値をクリアする。
+	function clearLatlng() {
+		laglngFieldValue = '';
 	}
 </script>
 
@@ -173,9 +180,13 @@
 			<input
 				class={latlngFieldWarning ? 'latlngFieldWarning' : 'latlngField'}
 				bind:value={laglngFieldValue}
-				on:keypress={latlngFieldKeyPress}
+				on:input={latlngFieldChanged}
 				type="text"
 			/>
+			<div class="latlngFieldButtonBox">
+				<button class="clear" on:click={clearLatlng}>クリア</button>
+				<button class="submit" on:click={moveToLatlng}>座標へ移動</button>
+			</div>
 		</div>
 
 		<div class="box">
@@ -246,6 +257,23 @@
 		padding: 0 4px;
 		margin: 4px 0;
 		color: red;
+	}
+	.box .latlngFieldButtonBox {
+		display: flex;
+		justify-content: space-between;
+	}
+	.box button.submit {
+		padding: 2px 8px;
+		margin: 4px 0;
+		font-size: small;
+		cursor: pointer;
+	}
+	.box button.clear {
+		padding: 2px 8px;
+		margin: 4px 0;
+		font-size: x-small;
+		opacity: 0.9;
+		cursor: pointer;
 	}
 
 	.raddiusCheckbox {
