@@ -140,6 +140,8 @@
 			// 不正な値のときは警告表示にする。
 			latlngFieldWarning = true;
 		} else {
+			// 正常な値のときは通常表示にする。
+			latlngFieldWarning = false;
 			map.setView(latlng);
 		}
 	}
